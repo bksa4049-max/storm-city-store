@@ -2293,3 +2293,669 @@
     <script>
 
 
+        "use strict";
+
+        // =====================================
+        // إعدادات متجر Storm City
+        // =====================================
+
+        const STORE_CONFIG = {
+            name: "Storm City",
+            discordInvite: "https://discord.gg/w2FnC6yRu",
+            storageKey: "storm-city-store-cart-v1"
+        };
+
+        // =====================================
+        // المنتجات
+        // =====================================
+
+        // مهم:
+        // أكواد المنتجات هنا لازم تطابق
+        // أكواد المنتجات داخل بوت الديسكورد.
+
+        const PRODUCTS = {
+            "SC-001": {
+                code: "SC-001",
+                name: "عقار خاص",
+                price: 20,
+                currency: "USD",
+                category: "properties",
+                icon: "🏡",
+                available: true
+            }
+        };
+
+        // =====================================
+        // متغيرات المتجر
+        // =====================================
+
+        let cart = [];
+        let activeCategory = "all";
+        let toastTimer = null;
+
+        // =====================================
+        // تحميل السلة المحفوظة
+        // =====================================
+
+        function loadCart() {
+            try {
+                const saved = localStorage.getItem(
+                    STORE_CONFIG.storageKey
+                );
+
+                const parsed = saved
+                    ? JSON.parse(saved)
+                    : [];
+
+                if (!Array.isArray(parsed)) {
+                    return [];
+                }
+
+                return [...new Set(parsed)].filter(
+                    code =>
+                        PRODUCTS[code] &&
+                        PRODUCTS[code].available
+                );
+
+            } catch (error) {
+                console.error(
+                    "Cart Load Error:",
+                    error
+                );
+
+                return [];
+            }
+        }
+
+        // =====================================
+        // حفظ السلة
+        // =====================================
+
+        function saveCart() {
+            try {
+                localStorage.setItem(
+                    STORE_CONFIG.storageKey,
+                    JSON.stringify(cart)
+                );
+            } catch (error) {
+                console.error(
+                    "Cart Save Error:",
+                    error
+                );
+            }
+        }
+
+        // =====================================
+        // إشعارات المتجر
+        // =====================================
+
+        function showToast(message) {
+            const toast = document.getElementById(
+                "toast"
+            );
+
+            clearTimeout(toastTimer);
+
+            toast.textContent = message;
+            toast.classList.add("active");
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove("active");
+            }, 3300);
+        }
+
+        // =====================================
+        // نسخ النص
+        // =====================================
+
+        async function copyText(text) {
+            try {
+                if (
+                    navigator.clipboard &&
+                    window.isSecureContext
+                ) {
+                    await navigator.clipboard.writeText(
+                        text
+                    );
+
+                    return true;
+                }
+            } catch (error) {
+                console.warn(
+                    "Clipboard Error:",
+                    error
+                );
+            }
+
+            const textarea = document.createElement(
+                "textarea"
+            );
+
+            textarea.value = text;
+            textarea.readOnly = true;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            textarea.style.left = "-9999px";
+
+            document.body.appendChild(textarea);
+
+            textarea.focus();
+            textarea.select();
+
+            let success = false;
+
+            try {
+                success = document.execCommand(
+                    "copy"
+                );
+            } catch (error) {
+                success = false;
+            }
+
+            textarea.remove();
+
+            return success;
+        }
+
+        // =====================================
+        // نسخ كود المنتج
+        // =====================================
+
+        async function copyCode(code) {
+            const product = PRODUCTS[code];
+
+            if (!product || !product.available) {
+                showToast(
+                    "❌ هذا المنتج غير متاح."
+                );
+
+                return;
+            }
+
+            const success = await copyText(
+                product.code
+            );
+
+            if (success) {
+                showToast(
+                    "✅ تم نسخ كود المنتج: " + code
+                );
+            } else {
+                showToast(
+                    "⚠️ تعذر النسخ التلقائي. الكود: " + code
+                );
+            }
+        }
+
+        // =====================================
+        // فتح سلة المشتريات
+        // =====================================
+
+        function openCart() {
+            renderCart();
+
+            document.getElementById(
+                "cartOverlay"
+            ).classList.add("active");
+
+            const drawer = document.getElementById(
+                "cartDrawer"
+            );
+
+            drawer.classList.add("active");
+
+            drawer.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+            document.body.classList.add(
+                "drawer-open"
+            );
+
+            document.querySelector(
+                ".close-cart"
+            ).focus();
+        }
+
+        // =====================================
+        // إغلاق سلة المشتريات
+        // =====================================
+
+        function closeCart() {
+            document.getElementById(
+                "cartOverlay"
+            ).classList.remove("active");
+
+            const drawer = document.getElementById(
+                "cartDrawer"
+            );
+
+            drawer.classList.remove("active");
+
+            drawer.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            document.body.classList.remove(
+                "drawer-open"
+            );
+        }
+
+        // =====================================
+        // إضافة منتج للسلة
+        // =====================================
+
+        function addToCart(code) {
+            const product = PRODUCTS[code];
+
+            if (!product || !product.available) {
+                showToast(
+                    "❌ المنتج غير متاح حالياً."
+                );
+
+                return;
+            }
+
+            if (cart.includes(code)) {
+                showToast(
+                    "⚠️ هذا المنتج موجود بالسلة بالفعل."
+                );
+
+                openCart();
+
+                return;
+            }
+
+            cart.push(code);
+
+            saveCart();
+            renderCart();
+
+            showToast(
+                "✅ تمت إضافة " +
+                product.name +
+                " إلى السلة."
+            );
+
+            openCart();
+        }
+
+        // =====================================
+        // حذف منتج من السلة
+        // =====================================
+
+        function removeFromCart(code) {
+            cart = cart.filter(
+                itemCode => itemCode !== code
+            );
+
+            saveCart();
+            renderCart();
+
+            showToast(
+                "🗑️ تمت إزالة المنتج من السلة."
+            );
+        }
+
+        // =====================================
+        // حساب إجمالي السلة
+        // =====================================
+
+        function calculateTotal() {
+            return cart.reduce(
+                (total, code) => {
+                    const product = PRODUCTS[code];
+
+                    if (!product) {
+                        return total;
+                    }
+
+                    return total + product.price;
+                },
+                0
+            );
+        }
+
+        // =====================================
+        // عرض منتجات السلة
+        // =====================================
+
+        function renderCart() {
+            const cartItems = document.getElementById(
+                "cartItems"
+            );
+
+            const cartCount = document.getElementById(
+                "cartCount"
+            );
+
+            const cartTotal = document.getElementById(
+                "cartTotal"
+            );
+
+            const checkoutButton = document.getElementById(
+                "checkoutButton"
+            );
+
+            cartCount.textContent = cart.length;
+
+            cartTotal.textContent = "$" +
+                calculateTotal();
+
+            checkoutButton.disabled =
+                cart.length === 0;
+
+            // إذا كانت السلة فارغة
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+
+                        <span class="cart-empty-icon">
+                            🛒
+                        </span>
+
+                        <strong>
+                            سلتك فارغة حالياً
+                        </strong>
+
+                        <p>
+                            أضف منتجاً من المتجر
+                            للبدء بالشراء.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+            // عرض المنتجات الموجودة بالسلة
+            // من قائمة المنتجات المعتمدة فقط.
+
+            cartItems.innerHTML = cart.map(
+                code => {
+                    const product = PRODUCTS[code];
+
+                    return `
+                        <div class="cart-item">
+
+                            <div class="cart-item-top">
+
+                                <div>
+
+                                    <div class="cart-item-title">
+                                        ${product.icon}
+                                        ${product.name}
+                                    </div>
+
+                                    <small class="cart-item-code">
+                                        ${product.code}
+                                    </small>
+
+                                </div>
+
+                                <span class="cart-item-price">
+                                    $${product.price}
+                                </span>
+
+                            </div>
+
+                            <div class="cart-item-actions">
+
+                                <button
+                                    type="button"
+                                    data-action="buy"
+                                    data-code="${code}"
+                                >
+                                    ⚡ شراء
+                                </button>
+
+                                <button
+                                    type="button"
+                                    data-action="copy"
+                                    data-code="${code}"
+                                >
+                                    📋 نسخ الكود
+                                </button>
+
+                                <button
+                                    type="button"
+                                    data-action="remove"
+                                    data-code="${code}"
+                                >
+                                    🗑️ إزالة
+                                </button>
+
+                            </div>
+
+                        </div>
+                    `;
+                }
+            ).join("");
+        }
+
+        // =====================================
+        // تشغيل أزرار السلة
+        // =====================================
+
+        document.getElementById(
+            "cartItems"
+        ).addEventListener(
+            "click",
+            function(event) {
+                const button = event.target.closest(
+                    "button[data-action]"
+                );
+
+                if (!button) return;
+
+                const action = button.dataset.action;
+                const code = button.dataset.code;
+
+                if (action === "remove") {
+                    removeFromCart(code);
+                }
+
+                if (action === "copy") {
+                    copyCode(code);
+                }
+
+                if (action === "buy") {
+                    buyProduct(code);
+                }
+            }
+        );
+
+        // =====================================
+        // شراء منتج
+        // =====================================
+
+        function buyProduct(code) {
+            const product = PRODUCTS[code];
+
+            if (!product || !product.available) {
+                showToast(
+                    "❌ المنتج غير متاح للشراء."
+                );
+
+                return;
+            }
+
+            // فتح الديسكورد مباشرة عند الضغط
+            // ليسمح المتصفح بفتح الرابط.
+
+            const discordWindow = window.open(
+                STORE_CONFIG.discordInvite,
+                "_blank"
+            );
+
+            if (discordWindow) {
+                discordWindow.opener = null;
+            } else {
+                showToast(
+                    "⚠️ افتح رابط الديسكورد يدوياً إذا لم يظهر."
+                );
+            }
+
+            // نسخ كود المنتج لاستخدامه
+            // في تذكرة المتجر.
+
+            copyCode(code);
+
+            closeCart();
+        }
+
+        // =====================================
+        // متابعة الشراء من السلة
+        // =====================================
+
+        function checkoutCart() {
+            if (cart.length === 0) {
+                showToast(
+                    "⚠️ السلة فارغة."
+                );
+
+                return;
+            }
+
+            // بوت التذاكر يقبل كود منتج واحد
+            // لكل تذكرة، لذلك لا نرسل
+            // عدة أكواد في طلب واحد.
+
+            if (cart.length > 1) {
+                showToast(
+                    "⚠️ اضغط شراء بجانب كل منتج بشكل منفصل."
+                );
+
+                return;
+            }
+
+            buyProduct(cart[0]);
+        }
+
+        // =====================================
+        // اختيار قسم المنتجات
+        // =====================================
+
+        function selectCategory(category) {
+            activeCategory = category;
+
+            document.querySelectorAll(
+                ".filter-btn"
+            ).forEach(button => {
+                button.classList.toggle(
+                    "active",
+                    button.dataset.filter === category
+                );
+            });
+
+            applyFilters();
+
+            document.getElementById(
+                "products"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
+        // =====================================
+        // فلترة المنتجات
+        // =====================================
+
+        function applyFilters() {
+            const searchValue = document.getElementById(
+                "productSearch"
+            ).value.trim().toLowerCase();
+
+            let visibleCount = 0;
+
+            document.querySelectorAll(
+                ".product-card"
+            ).forEach(card => {
+                const category = card.dataset.category;
+
+                const keywords = (
+                    card.dataset.search || ""
+                ).toLowerCase();
+
+                const matchesCategory =
+                    activeCategory === "all" ||
+                    category === activeCategory;
+
+                const matchesSearch =
+                    searchValue === "" ||
+                    keywords.includes(searchValue);
+
+                const visible =
+                    matchesCategory &&
+                    matchesSearch;
+
+                card.classList.toggle(
+                    "hidden",
+                    !visible
+                );
+
+                if (visible) {
+                    visibleCount++;
+                }
+            });
+
+            document.getElementById(
+                "emptySearch"
+            ).classList.toggle(
+                "hidden",
+                visibleCount !== 0
+            );
+        }
+
+        // =====================================
+        // البحث المباشر
+        // =====================================
+
+        document.getElementById(
+            "productSearch"
+        ).addEventListener(
+            "input",
+            applyFilters
+        );
+
+        // =====================================
+        // إغلاق السلة بزر ESC
+        // =====================================
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+                if (event.key === "Escape") {
+                    closeCart();
+                }
+            }
+        );
+
+        // =====================================
+        // تحميل بيانات المتجر
+        // =====================================
+
+        cart = loadCart();
+
+        renderCart();
+
+        applyFilters();
+
+        console.log(
+            "✅ Storm City Store Loaded"
+        );
+
+        console.log(
+            "✅ Store Products:",
+            Object.keys(PRODUCTS).length
+        );
+
+    </script>
+
+</body>
+</html>
+

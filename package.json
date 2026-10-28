@@ -1,0 +1,14 @@
+
+{
+  "name": "storm-city-permissions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Storm City Permissions",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check permissions.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

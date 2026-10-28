@@ -1,576 +1,1503 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Storm City Store</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<title>Storm City | Store</title>
 
-    body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(65, 105, 225, 0.12), transparent 30%),
-        linear-gradient(180deg, #07101f 0%, #0a1222 35%, #09101c 100%);
-      color: #fff;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+:root {
+  --bg: #080c14;
+  --panel: #101725;
+  --panel2: #151f30;
+  --blue: #2479ff;
+  --blue2: #00b7ff;
+  --text: #f5f8ff;
+  --muted: #8998ae;
+  --border: #243047;
+}
 
-    .container {
-      width: min(1100px, 92%);
-      margin: auto;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    header {
-      border-bottom: 1px solid rgba(89, 133, 255, 0.25);
-      background: rgba(6, 10, 18, 0.85);
-      backdrop-filter: blur(8px);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Tahoma, Arial, sans-serif;
+  line-height: 1.7;
+}
 
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 0;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
-    .brand h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #7fb0ff;
-      letter-spacing: 1px;
-    }
+button, input {
+  font-family: inherit;
+}
 
-    .brand p {
-      margin: 6px 0 0;
-      color: #a9b8d6;
-      font-size: 14px;
-    }
+button {
+  cursor: pointer;
+}
 
-    .discord-btn {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: bold;
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
-    }
+.container {
+  width: min(1150px, 92%);
+  margin: auto;
+}
 
-    .hero {
-      padding: 70px 0 40px;
-      text-align: center;
-    }
+/* الشريط العلوي */
 
-    .hero h2 {
-      margin: 0 0 15px;
-      font-size: 38px;
-      color: #ffffff;
-    }
+.topbar {
+  background: #0c1a32;
+  color: #9bcaff;
+  padding: 9px;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
 
-    .hero p {
-      margin: 0 auto;
-      max-width: 700px;
-      color: #a8b6d3;
-      line-height: 1.9;
-      font-size: 17px;
-    }
+/* الهيدر */
 
-    .hero-badges {
-      margin-top: 25px;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+header {
+  background: rgba(10, 15, 25, .96);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
 
-    .badge {
-      border: 1px solid rgba(84, 126, 255, 0.3);
-      background: rgba(17, 27, 46, 0.8);
-      color: #d8e4ff;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 14px;
-    }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 78px;
+  gap: 20px;
+}
 
-    .section-title {
-      margin: 0 0 20px;
-      font-size: 28px;
-      color: #ffffff;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    .store-layout {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 24px;
-      align-items: start;
-      margin-bottom: 35px;
-    }
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #1680ff, #043c9e);
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 24px;
+  box-shadow: 0 0 24px #0066ff33;
+}
 
-    .card {
-      background: rgba(10, 18, 32, 0.92);
-      border: 1px solid rgba(92, 127, 255, 0.18);
-      border-radius: 22px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
-      overflow: hidden;
-    }
+.logo b {
+  display: block;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
 
-    .product-card {
-      padding: 24px;
-    }
+.logo b span {
+  color: var(--blue2);
+}
 
-    .product-tag {
-      display: inline-block;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: #b7cfff;
-      background: rgba(59, 130, 246, 0.15);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 8px 12px;
-      border-radius: 999px;
-    }
+.logo small {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
 
-    .product-card h3 {
-      margin: 0 0 12px;
-      font-size: 28px;
-      color: #ffffff;
-    }
+nav {
+  display: flex;
+  gap: 28px;
+}
 
-    .product-card p {
-      margin: 0 0 14px;
-      color: #b6c3dd;
-      line-height: 1.9;
-    }
+nav a {
+  color: #bac7dc;
+  font-size: 14px;
+  transition: .2s;
+}
 
-    .price-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(99, 136, 255, 0.18);
-      border-radius: 18px;
-      padding: 18px;
-      margin-top: 20px;
-    }
+nav a:hover {
+  color: var(--blue2);
+}
 
-    .price-label {
-      color: #91a5c8;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
+.header-actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
 
-    .price-value {
-      font-size: 38px;
-      font-weight: bold;
-      color: #76a9ff;
-      margin-bottom: 8px;
-    }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: none;
+  padding: 12px 19px;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: .2s;
+}
 
-    .product-code {
-      margin-top: 16px;
-      background: #111b2f;
-      border: 1px dashed rgba(123, 161, 255, 0.35);
-      color: #cfe0ff;
-      padding: 14px 16px;
-      border-radius: 14px;
-      font-size: 15px;
-      line-height: 1.8;
-    }
+.btn-blue {
+  background: linear-gradient(135deg, #1678ff, #0351d5);
+  color: white;
+}
 
-    .copy-note {
-      margin-top: 12px;
-      color: #90a1be;
-      font-size: 14px;
-    }
+.btn-blue:hover {
+  filter: brightness(1.2);
+}
 
-    .payment-card {
-      padding: 24px;
-    }
+.btn-outline {
+  background: #142037;
+  border: 1px solid #2c4267;
+  color: white;
+}
 
-    .payment-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
+.btn-outline:hover {
+  background: #1a335b;
+}
 
-    .payment-top h3 {
-      margin: 0;
-      font-size: 30px;
-      color: #ffffff;
-    }
+.cart-button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: white;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 16px;
+}
 
-    .secure-badge {
-      background: rgba(59, 130, 246, 0.12);
-      color: #bcd4ff;
-      border: 1px solid rgba(59, 130, 246, 0.28);
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 14px;
-    }
+.menu-btn {
+  display: none;
+}
 
-    .method-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin: 20px 0 22px;
-    }
+/* الواجهة الرئيسية */
 
-    .method {
-      background: rgba(255, 255, 255, 0.03);
-      border: 2px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 18px 16px;
-      min-height: 105px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transition: 0.25s ease;
-    }
+.hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 75% 45%,
+      #083c824d,
+      transparent 45%
+    ),
+    linear-gradient(120deg, #0b1220, #080c14);
+  border-bottom: 1px solid var(--border);
+}
 
-    .method.active {
-      border-color: #4f8cff;
-      background: rgba(79, 140, 255, 0.1);
-      box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.12);
-    }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(#ffffff05 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff05 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
 
-    .method small {
-      color: #90a1be;
-      font-size: 12px;
-      margin-bottom: 8px;
-      display: block;
-    }
+.hero-content {
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+  position: relative;
+  padding: 70px 0;
+}
 
-    .method-title {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffffff;
-      line-height: 1.6;
-    }
+.hero-text {
+  max-width: 600px;
+}
 
-    .pay-box {
-      margin-top: 22px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 24px;
-    }
+.small-title {
+  color: #58aeff;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
 
-    .pay-box h4 {
-      margin: 0 0 14px;
-      font-size: 20px;
-      color: #ffffff;
-    }
+.hero h1 {
+  font-size: clamp(37px, 5vw, 65px);
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
 
-    .pay-box p {
-      margin: 0 0 20px;
-      color: #b7c5de;
-      line-height: 1.9;
-    }
+.hero h1 span {
+  background: linear-gradient(90deg, #1774ff, #00c8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-    .apple-pay-btn,
-    .ticket-btn,
-    .rules-btn {
-      display: block;
-      width: 100%;
-      border: none;
-      border-radius: 16px;
-      padding: 18px 20px;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-    }
+.hero p {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 480px;
+  margin-bottom: 27px;
+}
 
-    .apple-pay-btn {
-      background: #000;
-      color: white;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-    .total-box {
-      background: #05080e;
-      color: white;
-      border-radius: 20px;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
+.hero-art {
+  width: 300px;
+  height: 300px;
+  flex-shrink: 0;
+  border: 1px solid #1866c04d;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle, #1260c655, transparent 70%);
+  box-shadow:
+    0 0 0 35px #0867e808,
+    0 0 0 70px #0867e805;
+}
 
-    .total-box .amount {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffffff;
-    }
+.hero-art .circle {
+  width: 175px;
+  height: 175px;
+  border: 2px solid #2679f9;
+  border-radius: 35px;
+  background: linear-gradient(135deg, #173b72, #071b38);
+  box-shadow: 0 0 75px #006dff55;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  transform: rotate(-8deg);
+}
 
-    .total-box .to {
-      color: #9cb0d4;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
+.hero-art strong {
+  display: block;
+  font-size: 76px;
+  line-height: 1;
+  letter-spacing: -6px;
+}
 
-    .ticket-btn {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: #fff;
-      margin-top: 18px;
-      box-shadow: 0 10px 26px rgba(37, 99, 235, 0.25);
-    }
+.hero-art small {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #8ecaff;
+}
 
-    .rules-section {
-      margin: 12px 0 50px;
-    }
+/* معلومات المتجر */
 
-    .rules-card {
-      padding: 26px;
-    }
+.features {
+  border-bottom: 1px solid var(--border);
+  background: #0b111d;
+}
 
-    .rules-card h3 {
-      margin: 0 0 20px;
-      font-size: 30px;
-      color: white;
-    }
+.features-inner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 22px 0;
+}
 
-    .rules-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
-    .rule-item {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 16px;
-      padding: 18px;
-      color: #c3d0e8;
-      line-height: 1.8;
-      font-size: 15px;
-    }
+.feature-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  background: #142846;
+  border: 1px solid #244a7b;
+  color: #58a9ff;
+  border-radius: 12px;
+  font-size: 20px;
+}
 
-    .footer {
-      text-align: center;
-      color: #8496b5;
-      padding: 25px 15px 40px;
-      font-size: 14px;
-    }
+.feature strong {
+  display: block;
+  font-size: 13px;
+}
 
-    .mini-note {
-      font-size: 13px;
-      color: #8ea2c7;
-      margin-top: 10px;
-      line-height: 1.8;
-    }
+.feature small {
+  color: var(--muted);
+  font-size: 11px;
+}
 
-    @media (max-width: 900px) {
-      .store-layout {
-        grid-template-columns: 1fr;
-      }
+/* المتجر */
 
-      .rules-list {
-        grid-template-columns: 1fr;
-      }
-    }
+.store {
+  padding: 75px 0 95px;
+}
 
-    @media (max-width: 600px) {
-      .hero h2 {
-        font-size: 28px;
-      }
+.section-label {
+  color: var(--blue2);
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: bold;
+}
 
-      .payment-top h3,
-      .rules-card h3 {
-        font-size: 24px;
-      }
+.section-title {
+  font-size: 34px;
+  margin: 8px 0 32px;
+}
 
-      .method-grid {
-        grid-template-columns: 1fr;
-      }
+.section-title span {
+  color: var(--blue);
+}
 
-      .price-value {
-        font-size: 32px;
-      }
+.store-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 22px;
+}
 
-      .apple-pay-btn,
-      .ticket-btn {
-        font-size: 21px;
-      }
-    }
-  </style>
+.sidebar {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  overflow: hidden;
+  align-self: start;
+}
+
+.sidebar-title {
+  padding: 19px;
+  border-bottom: 1px solid var(--border);
+  font-weight: bold;
+}
+
+.category-list {
+  padding: 12px;
+}
+
+.category {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 13px;
+  margin-bottom: 5px;
+  color: #b4c3d9;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  text-align: right;
+}
+
+.category.active,
+.category:hover {
+  background: #102d55;
+  color: #6bbaff;
+}
+
+.category span:last-child {
+  font-size: 12px;
+}
+
+.sidebar-footer {
+  padding: 21px;
+  background: #0c1423;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.products-area {
+  min-width: 0;
+}
+
+.toolbar {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 15px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.toolbar strong {
+  font-size: 14px;
+}
+
+.toolbar small {
+  color: var(--muted);
+  margin-right: 9px;
+}
+
+.search {
+  width: min(270px, 100%);
+  border: 1px solid var(--border);
+  background: #0a101c;
+  border-radius: 9px;
+  color: white;
+  padding: 12px;
+  outline: none;
+}
+
+.search:focus {
+  border-color: var(--blue);
+}
+
+/* المنتجات */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 17px;
+}
+
+.product-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.product-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-3px);
+}
+
+.product-image {
+  height: 170px;
+  background: linear-gradient(140deg, #15355e, #090e18);
+  display: grid;
+  place-items: center;
+  color: #5799e7;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 18px;
+}
+
+.product-info small {
+  color: var(--blue2);
+}
+
+.product-info h3 {
+  margin: 8px 0;
+  font-size: 17px;
+}
+
+.product-info p {
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 40px;
+}
+
+.product-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  gap: 10px;
+}
+
+.product-bottom strong {
+  color: #67b4ff;
+}
+
+.add-btn {
+  border: none;
+  background: #155fdb;
+  color: white;
+  padding: 9px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+/* حالة المتجر الفارغ */
+
+.empty {
+  border: 1px dashed #294060;
+  background:
+    radial-gradient(circle at center, #0f2d5333, transparent 65%),
+    #0c1320;
+  border-radius: 17px;
+  text-align: center;
+  padding: 75px 20px;
+}
+
+.empty-icon {
+  width: 90px;
+  height: 90px;
+  margin: auto auto 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  color: #53aaff;
+  background: #102546;
+  border: 1px solid #25558d;
+}
+
+.empty h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.empty p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* التواصل */
+
+.contact {
+  padding: 45px 0;
+  background: linear-gradient(110deg, #102a52, #0a1527);
+  border-top: 1px solid #21477a;
+  border-bottom: 1px solid #21477a;
+}
+
+.contact-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.contact h2 {
+  font-size: 25px;
+  margin: 7px 0;
+}
+
+.contact p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+footer {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* السلة */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #000a;
+  z-index: 90;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: min(400px, 100%);
+  background: #101725;
+  border-right: 1px solid #2e4364;
+  z-index: 100;
+  transform: translateX(-110%);
+  transition: .3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  border-bottom: 1px solid var(--border);
+}
+
+.close {
+  background: #213047;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 13px;
+}
+
+.cart-items {
+  padding: 20px;
+  flex: 1;
+  overflow: auto;
+}
+
+.cart-empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 55px 0;
+}
+
+.cart-item {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.cart-item strong {
+  display: block;
+}
+
+.cart-item small {
+  color: var(--muted);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.qty button {
+  background: #1c3556;
+  color: white;
+  border: none;
+  padding: 4px 11px;
+  border-radius: 6px;
+}
+
+.drawer-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkout {
+  width: 100%;
+}
+
+.checkout:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 13px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 50%;
+  transform: translateX(50%);
+  background: #154e9c;
+  border: 1px solid #398fff;
+  border-radius: 10px;
+  padding: 12px 20px;
+  z-index: 150;
+  display: none;
+  text-align: center;
+}
+
+/* الجوال */
+
+@media(max-width: 800px) {
+  .header {
+    min-height: 70px;
+    flex-wrap: wrap;
+  }
+
+  .logo b {
+    font-size: 16px;
+  }
+
+  .header-actions .discord-btn {
+    display: none;
+  }
+
+  .menu-btn {
+    display: block;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  nav {
+    display: none;
+    order: 3;
+    width: 100%;
+    padding: 16px 0;
+  }
+
+  nav.open {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .hero-content {
+    min-height: auto;
+    padding: 70px 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-art {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto 0;
+  }
+
+  .hero-art .circle {
+    width: 130px;
+    height: 130px;
+  }
+
+  .hero-art strong {
+    font-size: 54px;
+  }
+
+  .features-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .store-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media(max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <header>
-    <div class="container header-inner">
-      <div class="brand">
-        <h1>STORM CITY</h1>
-        <p>Official Store</p>
+<div class="topbar">
+  STORM CITY / OFFICIAL STORE
+</div>
+
+<header>
+  <div class="container header">
+
+    <a class="logo" href="#home">
+      <div class="logo-icon">S</div>
+      <div>
+        <b>STORM <span>CITY</span></b>
+        <small>OFFICIAL STORE</small>
+      </div>
+    </a>
+
+    <nav id="nav">
+      <a href="#home">الرئيسية</a>
+      <a href="#store">المتجر</a>
+      <a href="#contact">التواصل</a>
+    </nav>
+
+    <div class="header-actions">
+
+      <a
+        class="btn btn-outline discord-btn"
+        href="https://discord.gg/w2FnC6yRu"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ديسكورد
+      </a>
+
+      <button class="cart-button" onclick="openCart()">
+        🛒 <span id="cartCount">0</span>
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="toggleMenu()"
+      >
+        ☰
+      </button>
+
+    </div>
+  </div>
+</header>
+
+<!-- الرئيسية -->
+
+<section class="hero" id="home">
+  <div class="container hero-content">
+
+    <div class="hero-text">
+      <div class="small-title">
+        WELCOME TO STORM CITY
       </div>
 
-      <a class="discord-btn" href="https://discord.gg/w2FnC6yRu" target="_blank">
-        دخول ديسكورد المتجر
-      </a>
-    </div>
-  </header>
+      <h1>
+        مرحباً بك في<br>
+        <span>STORM CITY</span><br>
+        OFFICIAL STORE
+      </h1>
 
-  <section class="hero">
-    <div class="container">
-      <h2>مرحباً بك في متجر Storm City</h2>
       <p>
-        متجر رسمي لشراء المنتجات والمميزات الخاصة بسيرفر Storm City.
-        اختر المنتج المناسب لك، ثم انسخ كود المنتج وافتح تذكرة متجر لإكمال الطلب.
+        المتجر الرسمي لسيرفر Storm City.
+        تصفح الأقسام والمنتجات الخاصة بالسيرفر.
       </p>
 
-      <div class="hero-badges">
-        <span class="badge">دفع إلكتروني</span>
-        <span class="badge">Apple Pay</span>
-        <span class="badge">STC Pay</span>
-        <span class="badge">Visa / Mastercard</span>
+      <div class="hero-buttons">
+        <a class="btn btn-blue" href="#store">
+          تصفح المتجر ←
+        </a>
+
+        <a
+          class="btn btn-outline"
+          href="https://discord.gg/w2FnC6yRu"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          مجتمع الديسكورد
+        </a>
       </div>
     </div>
-  </section>
 
-  <main class="container">
-    <div class="store-layout">
-      <!-- المنتج -->
-      <div class="card product-card">
-        <span class="product-tag">🏠 منتج مميز</span>
-        <h3>عقار خاص</h3>
-
-        <p>
-          امتلك عقارك الخاص داخل سيرفر Storm City واحصل على تجربة
-          مميزة داخل المدينة.
-        </p>
-
-        <div class="price-box">
-          <div class="price-label">السعر</div>
-          <div class="price-value">$20</div>
-          <div style="color:#9db0d1;">أو ما يعادلها بالريال السعودي</div>
-        </div>
-
-        <div class="product-code">
-          <strong>كود المنتج:</strong> <code>SC-001</code><br />
-          انسخ هذا الكود ثم افتح تذكرة المتجر في الديسكورد وأرسله داخل التذكرة.
-        </div>
-
-        <div class="copy-note">
-          ملاحظة: بعد فتح التذكرة سيتم متابعة الطلب من فريق المتجر.
-        </div>
-      </div>
-
-      <!-- الدفع -->
-      <div class="card payment-card">
-        <div class="payment-top">
-          <h3>إتمام عملية الدفع</h3>
-          <div class="secure-badge">🔒 دفع آمن</div>
-        </div>
-
-        <div class="method-grid">
-          <div class="method active">
-            <small>Apple Pay</small>
-            <div class="method-title">أبل باي</div>
-          </div>
-
-          <div class="method">
-            <small>Mada / Visa / Mastercard</small>
-            <div class="method-title">بطاقة ائتمان</div>
-          </div>
-
-          <div class="method">
-            <small>urpay</small>
-            <div class="method-title">يورباي</div>
-          </div>
-
-          <div class="method">
-            <small>STC Pay</small>
-            <div class="method-title">اس تي سي باي</div>
-          </div>
-        </div>
-
-        <div class="pay-box">
-          <h4>الدفع بـ Apple Pay</h4>
-          <p>
-            ادفع بسهولة وأمان باستخدام Apple Pay أو اختر إحدى وسائل الدفع
-            الإلكترونية المتاحة.
-          </p>
-
-          <button class="apple-pay-btn" type="button"> Pay</button>
-
-          <div class="mini-note">
-            إذا كنت لا تستخدم الدفع المباشر من الموقع حالياً، يمكنك
-            فتح تذكرة المتجر وإكمال الطلب مع فريق المتجر.
-          </div>
-
-          <div class="total-box">
-            <div>
-              <div class="to">المبلغ المستحق</div>
-              <div class="amount">$20.00</div>
-            </div>
-
-            <div style="text-align:left;">
-              <div class="to">كود المنتج</div>
-              <div class="amount" style="font-size:18px;">SC-001</div>
-            </div>
-          </div>
-
-          <a class="ticket-btn" href="https://discord.gg/w2FnC6yRu" target="_blank">
-            فتح تذكرة متجر الآن
-          </a>
+    <div class="hero-art">
+      <div class="circle">
+        <div>
+          <strong>SC</strong>
+          <small>STORM CITY</small>
         </div>
       </div>
     </div>
 
-    <!-- القوانين -->
-    <section class="rules-section">
-      <div class="card rules-card">
-        <h3>📌 قوانين المتجر</h3>
-
-        <div class="rules-list">
-          <div class="rule-item">
-            1. يجب فتح تذكرة متجر لإتمام أي طلب شراء.
-          </div>
-
-          <div class="rule-item">
-            2. يتم إرسال كود المنتج داخل التذكرة لتأكيد الطلب.
-          </div>
-
-          <div class="rule-item">
-            3. لا يتم تسليم المنتج إلا بعد تأكيد الدفع من فريق المتجر.
-          </div>
-
-          <div class="rule-item">
-            4. يمنع فتح أكثر من تذكرة لنفس الطلب.
-          </div>
-
-          <div class="rule-item">
-            5. يرجى الالتزام بالاحترام داخل التذاكر.
-          </div>
-
-          <div class="rule-item">
-            6. بعض المنتجات رقمية وغير قابلة للاسترجاع بعد التسليم.
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="footer">
-    © 2026 Storm City Store - All Rights Reserved
   </div>
+</section>
+
+<!-- مميزات -->
+
+<div class="features">
+  <div class="container features-inner">
+
+    <div class="feature">
+      <div class="feature-icon">🛡️</div>
+      <div>
+        <strong>متجر رسمي</strong>
+        <small>خاص بسيرفر Storm City</small>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">📦</div>
+      <div>
+        <strong>منتجات السيرفر</strong>
+        <small>تظهر هنا بعد إضافتها</small>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">🎧</div>
+      <div>
+        <strong>الدعم الفني</strong>
+        <small>عبر ديسكورد</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- المتجر -->
+
+<section class="store" id="store">
+  <div class="container">
+
+    <div class="section-label">
+      STORM / MARKETPLACE
+    </div>
+
+    <h2 class="section-title">
+      استكشف <span>المتجر</span>
+    </h2>
+
+    <div class="store-layout">
+
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          📁 أقسام المتجر
+        </div>
+
+        <div
+          class="category-list"
+          id="categories"
+        ></div>
+
+        <div class="sidebar-footer">
+          STORM CITY STORE
+        </div>
+      </aside>
+
+      <div class="products-area">
+
+        <div class="toolbar">
+          <div>
+            <strong>المنتجات</strong>
+            <small id="itemsCount">0 منتجات</small>
+          </div>
+
+          <input
+            class="search"
+            id="search"
+            type="search"
+            placeholder="ابحث عن منتج..."
+            oninput="renderProducts()"
+          >
+        </div>
+
+        <div
+          class="product-grid"
+          id="productGrid"
+        ></div>
+
+        <div class="empty" id="emptyState">
+          <div class="empty-icon">🛍️</div>
+          <h3>المتجر ينتظر منتجاتك</h3>
+          <p>
+            لا توجد منتجات معروضة حاليًا.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- التواصل -->
+
+<section class="contact" id="contact">
+  <div class="container contact-inner">
+
+    <div>
+      <div class="section-label">
+        STORM CITY / SUPPORT
+      </div>
+
+      <h2>تواصل معنا عبر ديسكورد</h2>
+
+      <p>
+        للاستفسارات والمساعدة،
+        تواصل مع فريق السيرفر.
+      </p>
+    </div>
+
+    <a
+      class="btn btn-blue"
+      href="https://discord.gg/w2FnC6yRu"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      فتح الديسكورد ←
+    </a>
+
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span>
+  STORM CITY — ALL RIGHTS RESERVED
+</footer>
+
+<!-- السلة -->
+
+<div
+  class="overlay"
+  id="overlay"
+  onclick="closeCart()"
+  hidden
+></div>
+
+<div class="drawer" id="cartDrawer">
+
+  <div class="drawer-header">
+    <h2>🛒 سلة المشتريات</h2>
+
+    <button class="close" onclick="closeCart()">
+      ✕
+    </button>
+  </div>
+
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      السلة فارغة حاليًا
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <div class="total">
+      <span>الإجمالي</span>
+      <strong id="cartTotal">$0.00</strong>
+    </div>
+
+    <button
+      class="btn btn-blue checkout"
+      id="checkout"
+      onclick="checkout()"
+      disabled
+    >
+      نسخ أكواد الطلب
+    </button>
+
+    <p class="note">
+      الدفع الإلكتروني غير مفعل حاليًا.
+      يتم إكمال الطلب عن طريق تذكرة المتجر.
+    </p>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ==================================
+// إعدادات المتجر
+// ==================================
+
+const DISCORD_INVITE =
+  'https://discord.gg/w2FnC6yRu';
+
+// أضف المنتجات هنا لاحقًا.
+// حاليًا المتجر فارغ.
+
+const PRODUCTS = [
+
+  // مثال منتج:
+  //
+  // {
+  //   id: 'SC-001',
+  //   name: 'عقار خاص',
+  //   description: 'عقار خاص داخل السيرفر',
+  //   price: 20,
+  //   category: 'العقارات',
+  //   image: ''
+  // }
+
+];
+
+// ==================================
+// حالة المتجر
+// ==================================
+
+let currentCategory = 'all';
+
+let cart = {};
+
+try {
+  cart = JSON.parse(
+    localStorage.getItem('stormCart') || '{}'
+  );
+
+  if (
+    !cart ||
+    typeof cart !== 'object' ||
+    Array.isArray(cart)
+  ) {
+    cart = {};
+  }
+} catch {
+  cart = {};
+}
+
+const $ = selector =>
+  document.querySelector(selector);
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(
+    /[&<>"']/g,
+    char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char])
+  );
+}
+
+function safeImage(url) {
+  if (!url) return '';
+
+  try {
+    const parsed = new URL(url);
+
+    return ['https:', 'http:'].includes(parsed.protocol)
+      ? parsed.href
+      : '';
+  } catch {
+    return '';
+  }
+}
+
+function money(value) {
+  return '$' + Number(value || 0).toFixed(2);
+}
+
+function showToast(message) {
+  const toast = $('#toast');
+
+  toast.textContent = message;
+  toast.style.display = 'block';
+
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 2500);
+}
+
+// ==================================
+// الأقسام
+// ==================================
+
+function renderCategories() {
+  const categories = [
+    ...new Set(
+      PRODUCTS.map(
+        item => item.category || 'عام'
+      )
+    )
+  ];
+
+  const list = $('#categories');
+
+  list.innerHTML = '';
+
+  const all = document.createElement('button');
+
+  all.className =
+    'category' +
+    (currentCategory === 'all' ? ' active' : '');
+
+  all.textContent = 'جميع المنتجات';
+
+  all.onclick = () => {
+    currentCategory = 'all';
+    renderCategories();
+    renderProducts();
+  };
+
+  list.appendChild(all);
+
+  categories.forEach(category => {
+    const button = document.createElement('button');
+
+    button.className =
+      'category' +
+      (currentCategory === category ? ' active' : '');
+
+    button.textContent = category;
+
+    button.onclick = () => {
+      currentCategory = category;
+      renderCategories();
+      renderProducts();
+    };
+
+    list.appendChild(button);
+  });
+}
+
+// ==================================
+// عرض المنتجات
+// ==================================
+
+function renderProducts() {
+  const query = $('#search').value
+    .trim()
+    .toLowerCase();
+
+  const visible = PRODUCTS.filter(product => {
+    const categoryMatch =
+      currentCategory === 'all' ||
+      (product.category || 'عام') === currentCategory;
+
+    const searchMatch =
+      `${product.name} ${product.id} ${product.description || ''}`
+        .toLowerCase()
+        .includes(query);
+
+    return categoryMatch && searchMatch;
+  });
+
+  $('#itemsCount').textContent =
+    visible.length + ' منتجات';
+
+  const grid = $('#productGrid');
+  grid.innerHTML = '';
+
+  $('#emptyState').style.display =
+    visible.length ? 'none' : 'block';
+
+  visible.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+
+    const image = safeImage(product.image);
+
+    card.innerHTML = `
+      <div class="product-image">
+        ${
+          image
+            ? `<img src="${escapeHTML(image)}"
+                 alt="${escapeHTML(product.name)}">`
+            : 'SC'
+        }
+      </div>
+
+      <div class="product-info">
+        <small>${escapeHTML(product.id)}</small>
+
+        <h3>${escapeHTML(product.name)}</h3>
+
+        <p>${escapeHTML(product.description || '')}</p>
+
+        <div class="product-bottom">
+          <strong>${money(product.price)}</strong>
+
+          <button class="add-btn">
+            أضف للسلة +
+          </button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.add-btn').onclick = () => {
+      addToCart(product.id);
+    };
+
+    grid.appendChild(card);
+  });
+}
+
+// ==================================
+// السلة
+// ==================================
+
+function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
+
+  if (!product) return;
+
+  cart[id] = Math.min(
+    99,
+    (Number(cart[id]) || 0) + 1
+  );
+
+  saveCart();
+  showToast('✅ تمت إضافة المنتج للسلة');
+}
+
+function saveCart() {
+  localStorage.setItem(
+    'stormCart',
+    JSON.stringify(cart)
+  );
+
+  renderCart();
+}
+
+function changeQuantity(id, amount) {
+  cart[id] = Math.max(
+    0,
+    (Number(cart[id]) || 0) + amount
+  );
+
+  if (cart[id] === 0) {
+    delete cart[id];
+  }
+
+  saveCart();
+}
+
+function renderCart() {
+  const items = Object.entries(cart)
+    .map(([id, quantity]) => ({
+      product: PRODUCTS.find(p => p.id === id),
+      quantity: Number(quantity)
+    }))
+    .filter(
+      item => item.product && item.quantity > 0
+    );
+
+  const count = items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
+  const total = items.reduce(
+    (sum, item) =>
+      sum + item.product.price * item.quantity,
+    0
+  );
+
+  $('#cartCount').textContent = count;
+  $('#cartTotal').textContent = money(total);
+  $('#checkout').disabled = count === 0;
+
+  const root = $('#cartItems');
+  root.innerHTML = '';
+
+  if (!items.length) {
+    root.innerHTML = `
+      <div class="cart-empty">
+        🛒<br><br>
+        السلة فارغة حاليًا
+      </div>
+    `;
+    return;
+  }
+
+  items.forEach(({ product, quantity }) => {
+    const item = document.createElement('div');
+    item.className = 'cart-item';
+
+    item.innerHTML = `
+      <strong>${escapeHTML(product.name)}</strong>
+
+      <small>
+        ${escapeHTML(product.id)}
+        —
+        ${money(product.price)}
+      </small>
+
+      <div class="qty">
+        <button class="minus">−</button>
+        <span>${quantity}</span>
+        <button class="plus">+</button>
+      </div>
+    `;
+
+    item.querySelector('.minus').onclick = () => {
+      changeQuantity(product.id, -1);
+    };
+
+    item.querySelector('.plus').onclick = () => {
+      changeQuantity(product.id, 1);
+    };
+
+    root.appendChild(item);
+  });
+}
+
+function openCart() {
+  $('#overlay').hidden = false;
+  $('#cartDrawer').classList.add('open');
+}
+
+function closeCart() {
+  $('#overlay').hidden = true;
+  $('#cartDrawer').classList.remove('open');
+}
+
+// ==================================
+// نسخ كود الطلب
+// ==================================
+
+async function checkout() {
+  const lines = Object.entries(cart)
+    .filter(([id, quantity]) => Number(quantity) > 0)
+    .map(([id, quantity]) => `${id} × ${quantity}`);
+
+  if (!lines.length) return;
+
+  const text = lines.join('\n');
+
+  try {
+    await navigator.clipboard.writeText(text);
+
+    showToast(
+      '✅ تم نسخ أكواد المنتجات. افتح تذكرة متجر في ديسكورد.'
+    );
+  } catch {
+    window.prompt(
+      'انسخ أكواد المنتجات من هنا:',
+      text
+    );
+  }
+}
+
+// ==================================
+// قائمة الجوال
+// ==================================
+
+function toggleMenu() {
+  $('#nav').classList.toggle('open');
+}
+
+// ==================================
+// تشغيل الصفحة
+// ==================================
+
+$('#year').textContent = new Date().getFullYear();
+
+renderCategories();
+renderProducts();
+renderCart();
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    closeCart();
+  }
+});
+
+</script>
 
 </body>
 </html>
